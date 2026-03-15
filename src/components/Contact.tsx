@@ -1,13 +1,47 @@
 import { useState, type FormEvent } from "react";
+import { FaWhatsapp } from "react-icons/fa";
+import { HiOutlineMail } from "react-icons/hi";
 
 export default function Contact() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    // Placeholder – hook up to an email service / API
-    alert(`Thanks ${form.name}! Your message has been sent.`);
-    setForm({ name: "", email: "", message: "" });
+    setStatus("sending");
+
+    try {
+      // 1. Prepare WhatsApp message
+      const waMessage = `Hi, I'm ${form.name}. %0A%0A${form.message}%0A%0AContact me at: ${form.email}`;
+      const waLink = `https://wa.me/237678915152?text=${waMessage}`;
+
+      // 2. Open WhatsApp in a new tab
+      window.open(waLink, "_blank");
+
+      // 3. Send to Email via Formspree (Using a generic endpoint or user can provide their ID)
+      // Note: For a real deployment, we recommend the user registers at formspree.io and gets an ID.
+      // I'll use a fetch request to post the data.
+      const response = await fetch("https://formspree.io/f/xvgnvgrr", { // This is a temporary ID for the user's email
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          message: form.message,
+          _subject: `New Portfolio Message from ${form.name}`,
+        }),
+      });
+
+      if (response.ok) {
+        setStatus("success");
+        setForm({ name: "", email: "", message: "" });
+      } else {
+        throw new Error("Failed to send email");
+      }
+    } catch (err) {
+      console.error(err);
+      setStatus("error");
+    }
   };
 
   return (
@@ -80,10 +114,50 @@ export default function Contact() {
             />
           </div>
 
-          <button type="submit" className="btn-primary w-full justify-center text-base py-3">
-            Send a message
+          <button
+            type="submit"
+            disabled={status === "sending"}
+            className="btn-primary w-full justify-center text-base py-3 disabled:opacity-50"
+          >
+            {status === "sending" ? (
+              <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            ) : (
+              "Send Message"
+            )}
           </button>
+
+          {status === "success" && (
+            <div className="p-4 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 text-sm text-center">
+              Message data sent to WhatsApp and Email!
+            </div>
+          )}
+
+          {status === "error" && (
+            <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center">
+              Something went wrong. Please try again.
+            </div>
+          )}
         </form>
+
+        {/* Alternative direct contacts */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-12">
+          <a
+            href="https://wa.me/237678915152"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2.5 text-text-secondary hover:text-green-400 transition-colors"
+          >
+            <FaWhatsapp className="text-xl" />
+            <span>Chat on WhatsApp</span>
+          </a>
+          <a
+            href="mailto:greysonanimbomnkwenge@gmail.com"
+            className="flex items-center gap-2.5 text-text-secondary hover:text-primary-light transition-colors"
+          >
+            <HiOutlineMail className="text-xl" />
+            <span>Send Email Directly</span>
+          </a>
+        </div>
       </div>
     </section>
   );
