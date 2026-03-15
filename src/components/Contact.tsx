@@ -11,17 +11,9 @@ export default function Contact() {
     setStatus("sending");
 
     try {
-      // 1. Prepare WhatsApp message
-      const waMessage = `Hi, I'm ${form.name}. %0A%0A${form.message}%0A%0AContact me at: ${form.email}`;
-      const waLink = `https://wa.me/237678915152?text=${waMessage}`;
-
-      // 2. Open WhatsApp in a new tab
-      window.open(waLink, "_blank");
-
-      // 3. Send to Email via Formspree (Using a generic endpoint or user can provide their ID)
-      // Note: For a real deployment, we recommend the user registers at formspree.io and gets an ID.
-      // I'll use a fetch request to post the data.
-      const response = await fetch("https://formspree.io/f/xvgnvgrr", { // This is a temporary ID for the user's email
+      // Send to Email via Formspree
+      // Note: User should register at formspree.io and replace this ID if they want their own dashboard.
+      const response = await fetch("https://formspree.io/f/xvgnvgrr", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -128,7 +120,7 @@ export default function Contact() {
 
           {status === "success" && (
             <div className="p-4 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 text-sm text-center">
-              Message data sent to WhatsApp and Email!
+              Thanks! Your message has been sent to my email.
             </div>
           )}
 
