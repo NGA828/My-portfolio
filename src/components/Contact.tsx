@@ -12,8 +12,7 @@ export default function Contact() {
 
     try {
       // Send to Email via Formspree
-      // Note: User should register at formspree.io and replace this ID if they want their own dashboard.
-      const response = await fetch("https://formspree.io/f/xvgnvgrr", {
+      const response = await fetch("https://formspree.io/f/xdawldek", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
