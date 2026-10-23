@@ -8,14 +8,17 @@ import Footer from "./components/Footer";
 
 export default function App() {
   return (
-    <div className="relative min-h-screen bg-surface">
+    <>
+      <a className="skip-link" href="#main-content">Skip to content</a>
       <Navbar />
-      <Hero />
-      <About />
-      <Skills />
-      <Projects />
-      <Contact />
+      <main id="main-content">
+        <Hero />
+        <About />
+        <Skills />
+        <Projects />
+        <Contact />
+      </main>
       <Footer />
-    </div>
+    </>
   );
 }
