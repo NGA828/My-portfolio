@@ -40,13 +40,13 @@ export default function Contact() {
           <label htmlFor="name">Your name</label>
           <input
             id="name" name="name" type="text" autoComplete="name" required maxLength={100}
-            placeholder="Jane Smith" value={form.name}
+            placeholder="your name" value={form.name}
             onChange={(event) => setForm({ ...form, name: event.target.value })}
           />
           <label htmlFor="email">Email address</label>
           <input
             id="email" name="email" type="email" autoComplete="email" required maxLength={254}
-            placeholder="jane@example.com" value={form.email}
+            placeholder="your email" value={form.email}
             onChange={(event) => setForm({ ...form, email: event.target.value })}
           />
           <label htmlFor="message">What’s on your mind?</label>
