@@ -1,86 +1,53 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { ArrowUpRight, Menu, X } from "lucide-react";
 
 const navLinks = [
-  { label: "Home", href: "#home" },
   { label: "About", href: "#about" },
-  { label: "Skills", href: "#skills" },
-  { label: "Projects", href: "#projects" },
-  { label: "Contact", href: "#contact" },
+  { label: "Expertise", href: "#skills" },
+  { label: "Selected work", href: "#projects" },
 ];
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileOpen(false);
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
   }, []);
 
   return (
-    <nav
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-surface/80 backdrop-blur-xl border-b border-border shadow-lg shadow-primary/5"
-          : "bg-transparent"
-      }`}
-    >
-      <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-        {/* Logo */}
-        <a href="#home" className="text-xl font-bold gradient-text tracking-tight">
-          GREYSON<span className="text-primary-light">+</span>
+    <header className="site-header">
+      <nav className="nav-shell" aria-label="Main navigation">
+        <a className="wordmark" href="#home" aria-label="Greyson Animbom, home">
+          <span className="wordmark-mark">G</span>
+          <span>Greyson <span className="wordmark-last">Animbom</span></span>
         </a>
 
-        {/* Desktop Links */}
-        <ul className="hidden md:flex items-center gap-8">
+        <div id="mobile-navigation" className={`nav-links${mobileOpen ? " is-open" : ""}`}>
           {navLinks.map((link) => (
-            <li key={link.href}>
-              <a
-                href={link.href}
-                className="text-sm text-text-secondary hover:text-primary-light transition-colors duration-200 relative group"
-              >
-                {link.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-accent group-hover:w-full transition-all duration-300" />
-              </a>
-            </li>
+            <a key={link.href} href={link.href} onClick={() => setMobileOpen(false)}>
+              {link.label}
+            </a>
           ))}
-        </ul>
-
-        {/* Mobile Toggle */}
-        <button
-          className="md:hidden text-text-secondary hover:text-primary-light transition-colors"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="Toggle menu"
-        >
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            {mobileOpen ? (
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-            )}
-          </svg>
-        </button>
-      </div>
-
-      {/* Mobile Menu */}
-      {mobileOpen && (
-        <div className="md:hidden bg-surface-light/95 backdrop-blur-xl border-t border-border">
-          <ul className="flex flex-col items-center gap-4 py-6">
-            {navLinks.map((link) => (
-              <li key={link.href}>
-                <a
-                  href={link.href}
-                  className="text-text-secondary hover:text-primary-light transition-colors"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  {link.label}
-                </a>
-              </li>
-            ))}
-          </ul>
+          <a className="nav-contact" href="#contact" onClick={() => setMobileOpen(false)}>
+            Let’s talk <ArrowUpRight size={15} aria-hidden="true" />
+          </a>
         </div>
-      )}
-    </nav>
+
+        <button
+          className="menu-toggle"
+          type="button"
+          aria-label={mobileOpen ? "Close navigation menu" : "Open navigation menu"}
+          aria-expanded={mobileOpen}
+          aria-controls="mobile-navigation"
+          onClick={() => setMobileOpen((open) => !open)}
+        >
+          {mobileOpen ? <X size={21} /> : <Menu size={21} />}
+        </button>
+      </nav>
+    </header>
   );
 }
